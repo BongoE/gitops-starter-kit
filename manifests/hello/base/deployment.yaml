@@ -12,12 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        app: hello
+        app: helo
     spec:
       containers:
         - name: hello
-          # podinfo is a tiny demo app that shows its own version and a colour. Perfect for watching changes land.
-          image: ghcr.io/stefanprodan/podinfo:6.6.2
+          image: ghcr.io/stefanprodan/podinfo:6.6.2-latest
           ports:
             - containerPort: 9898
               name: http
@@ -25,10 +24,10 @@ spec:
             - name: PODINFO_UI_COLOR
               value: "#34577c"
             - name: PODINFO_UI_MESSAGE
-              value: "Hello from GitOps. This text came from Git."
+              value: "If you can read this, you fixed all five bugs. Post it."
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /ready
               port: http
             initialDelaySeconds: 3
           resources:
