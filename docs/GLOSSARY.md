@@ -1,0 +1,23 @@
+# Glossary (plain English)
+
+- **Declarative**: you write what you want, not the steps. "One replica of this image" instead of "run this, then that".
+- **Desired state**: what Git says the system should look like.
+- **Actual state**: what the cluster looks like right now.
+- **Drift**: the gap between the two.
+- **Reconciliation**: the controller closing that gap, continuously.
+- **Controller / operator / agent**: the software inside the cluster doing the reconciling. Here: Argo CD.
+- **Sync**: Argo CD applying Git to the cluster. "Synced" = no drift.
+- **Health**: whether the applied resources are actually working (pods Ready). Synced but Unhealthy is common.
+- **Pull vs push**: pull = the agent fetches from Git. Push = a pipeline outside the cluster runs `kubectl apply`. GitOps is pull.
+- **Application (Argo CD)**: one unit of "this Git path goes to this cluster/namespace".
+- **App of Apps**: an Application that points at a folder full of other Applications. One file bootstraps everything.
+- **Kustomize**: a tool for layering YAML. A `base` plus `overlays` (dev, prod) with small differences.
+- **Helm**: a packaging tool for Kubernetes apps. Charts plus values. Argo CD supports both.
+- **Overlay / environment**: in this kit, a folder. `overlays/dev` and `overlays/prod`.
+- **Promotion**: moving a version from dev to prod. In GitOps that is a change to the prod folder.
+- **selfHeal**: Argo CD setting that reverts manual changes in the cluster.
+- **prune**: Argo CD setting that deletes cluster objects no longer in Git.
+- **Break-glass**: a documented, audited way for a human to bypass GitOps during an emergency (for example, pausing auto-sync). Seniors design this on day one.
+- **CI vs CD**: CI builds and tests the image. CD decides what runs where. GitOps is the CD part.
+- **Floating tag**: `latest` or a reused tag. Changes what runs without changing Git. Forbidden in GitOps.
+- **DORA metrics**: deployment frequency, lead time, change failure rate, time to restore. The four numbers leadership understands.

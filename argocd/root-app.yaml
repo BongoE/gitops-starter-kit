@@ -1,0 +1,22 @@
+# The "App of Apps". This single Application tells Argo CD to watch the apps/ folder
+# and create every Application it finds there. Bootstrapping a whole cluster = applying this one file.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BongoE/gitops-starter-kit.git
+    targetRevision: main
+    path: apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

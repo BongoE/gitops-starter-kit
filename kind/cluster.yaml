@@ -1,0 +1,10 @@
+# One-node kind cluster. Port 30080 is exposed so you can open the sample app in a browser.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: gitops-starter
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 30080
+        protocol: TCP

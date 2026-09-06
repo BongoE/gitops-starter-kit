@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BongoE/gitops-starter-kit.git
+    targetRevision: main
+    path: manifests/hello/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hello-prod
+  # Deliberately NOT automated. Prod syncs when a human clicks "Sync" or runs `argocd app sync hello-prod`.
+  # Exercise 05 asks you to decide whether that is the right call.
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

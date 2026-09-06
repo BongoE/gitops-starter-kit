@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BongoE/gitops-starter-kit.git
+    targetRevision: main
+    path: manifests/hello/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hello-dev
+  syncPolicy:
+    automated:
+      prune: true      # delete things removed from Git
+      selfHeal: true   # revert manual changes in the cluster (this is the magic of rule 4)
+    syncOptions:
+      - CreateNamespace=true

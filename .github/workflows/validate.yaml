@@ -1,0 +1,25 @@
+name: validate-manifests
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  kustomize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kustomize and kubeconform
+        run: |
+          curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin
+          curl -sL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | sudo tar xz -C /usr/local/bin
+      - name: Build and validate every overlay
+        run: |
+          for d in manifests/hello/overlays/dev manifests/hello/overlays/prod; do
+            echo "== $d"
+            kustomize build "$d" | kubeconform -strict -summary
+          done
+      - name: Validate Argo CD Applications (schema check skipped for CRDs, syntax only)
+        run: |
+          for f in apps/*.yaml argocd/*.yaml; do
+            kubeconform -ignore-missing-schemas -summary "$f"
+          done
