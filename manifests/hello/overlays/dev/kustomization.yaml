@@ -8,7 +8,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
-        value: "Hello from DEV. Change me in Git and watch Argo CD sync."
+        value: "Hello from DEV. Edited by Endah to prove GitOps works."
     target:
       kind: Deployment
       name: hello
