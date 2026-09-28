@@ -4,6 +4,9 @@ namespace: hello-dev
 resources:
   - ../../base
   - namespace.yaml
+replicas:
+  - name: hello
+    count: 3
 patches:
   - patch: |-
       - op: replace
