@@ -19,7 +19,10 @@ kubectl config use-context kind-gitops-starter >/dev/null
 
 echo "==> 2/4 Installing Argo CD ($ARGOCD_VERSION)"
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -n argocd -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
+# --server-side avoids the client-side apply annotation, which is too small
+# to hold the ApplicationSet CRD's schema (kubectl apply would fail with
+# "metadata.annotations: Too long: may not be more than 262144 bytes").
+kubectl apply -n argocd --server-side --force-conflicts -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 
 echo "==> 3/4 Waiting for Argo CD to be ready (this can take 1 to 3 minutes)"
 kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
