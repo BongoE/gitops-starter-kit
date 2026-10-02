@@ -4,10 +4,11 @@
 
 1. Scale the app by hand, the "old way":
    ```bash
-   kubectl -n hello-dev scale deployment hello --replicas=3
+   kubectl -n hello-dev scale deployment hello --replicas=5
    kubectl -n hello-dev get pods
    ```
-2. Watch Argo CD. `hello-dev` briefly shows OutOfSync, then `selfHeal` puts it back to 1 replica.
+2. Watch Argo CD. `hello-dev` briefly shows OutOfSync, then `selfHeal` puts it back to the
+   replica count declared in `manifests/hello/overlays/dev/kustomization.yaml` (currently 3).
 3. Now try to change the message by hand:
    ```bash
    kubectl -n hello-dev set env deployment/hello PODINFO_UI_MESSAGE="I edited prod by hand"
