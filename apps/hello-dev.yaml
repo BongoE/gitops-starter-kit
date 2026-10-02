@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/BongoE/gitops-starter-kit.git
-    targetRevision: main
+    targetRevision: broken/troubleshooting-lab
     path: manifests/hello/overlays/dev
   destination:
     server: https://kubernetes.default.svc
