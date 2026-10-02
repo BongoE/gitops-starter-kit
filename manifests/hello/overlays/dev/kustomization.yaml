@@ -7,9 +7,6 @@ resources:
 replicas:
   - name: hello
     count: 3
-images:
-  - name: ghcr.io/stefanprodan/podinfo
-    newTag: does-not-exist
 patches:
   - patch: |-
       - op: replace
