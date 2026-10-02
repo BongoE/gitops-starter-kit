@@ -14,5 +14,6 @@ Two weeks of posts by Endah Bongo-Awah explaining GitOps from zero to what a sen
 | 8 | Is it expensive? | docs/DECISIONS.md |
 | 9 | What a senior owns | docs/DECISIONS.md, labs/ |
 | 10 | Where to start and stop | LEARNING-PATH.md |
+| 11 | Why can't I just open the Argo CD UI? | docs/ACCESSING-ARGOCD-UI.md |
 
 Links to the posts will be added here as they go live.
