@@ -17,6 +17,8 @@
 - **Promotion**: moving a version from dev to prod. In GitOps that is a change to the prod folder.
 - **selfHeal**: Argo CD setting that reverts manual changes in the cluster.
 - **prune**: Argo CD setting that deletes cluster objects no longer in Git.
+- **Port-forward**: a temporary, local-only tunnel from a port on your laptop into a Service inside the cluster. Closes the moment you close the terminal. See [docs/ACCESSING-ARGOCD-UI.md](ACCESSING-ARGOCD-UI.md).
+- **ClusterIP**: a Service type reachable only from inside the cluster. The safe default, not a limitation.
 - **Break-glass**: a documented, audited way for a human to bypass GitOps during an emergency (for example, pausing auto-sync). Seniors design this on day one.
 - **CI vs CD**: CI builds and tests the image. CD decides what runs where. GitOps is the CD part.
 - **Floating tag**: `latest` or a reused tag. Changes what runs without changing Git. Forbidden in GitOps.

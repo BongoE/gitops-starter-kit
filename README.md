@@ -18,6 +18,8 @@ make login     # prints the admin password, port-forwards the UI to https://loca
 ```
 Then open http://localhost:30080 to see the sample app, and start with `exercises/01-first-sync.md`.
 
+Wondering why you need that `make login` step at all, and what changes in a real company? See [docs/ACCESSING-ARGOCD-UI.md](docs/ACCESSING-ARGOCD-UI.md).
+
 Prerequisites (Docker, kind, kubectl, kustomize): see [docs/PREREQUISITES.md](docs/PREREQUISITES.md).
 Tear everything down with `make down`. Your laptop is untouched apart from one Docker container.
 
