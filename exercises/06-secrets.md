@@ -9,4 +9,5 @@ Three patterns, in order of how often you will meet them:
 2. **SOPS + age/KMS**: the encrypted secret *is* in Git; the controller decrypts at sync time. Flux supports this natively, Argo via a plugin.
 3. **Sealed Secrets**: encrypt with a cluster public key; only that cluster can decrypt.
 
-**Task:** pick one, read its README, and write in `docs/DECISIONS.md` which one you would choose for a team on AWS and why. Then, if you feel brave, add it to this kit and open a PR.
+**Task:** pick one, read its README, and write in `docs/DECISIONS.md` which one you would choose for a team on AWS and why. Then try it hands-on: starter manifests for all three patterns live in `labs/secrets/`. Follow the instructions in `labs/secrets/README.md`, apply one pattern to your cluster, and observe the resulting Kubernetes Secret. When you are ready, open a PR adding your chosen pattern to the kit.
+
