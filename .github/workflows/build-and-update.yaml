@@ -1,0 +1,101 @@
+name: build-and-update-dev
+# Example workflow: build a container image and open a PR that updates the
+# dev overlay to the new tag. This is the pattern that turns this kit into a
+# real CI/CD pipeline — the "CI" side produces an image, the "CD" side (Argo CD)
+# deploys whatever tag is in Git.
+#
+# HOW TO ACTIVATE THIS:
+#   1. Replace REGISTRY, IMAGE_NAME with your own values.
+#   2. Set up GHCR (or another registry) and confirm the image pushes correctly.
+#   3. Remove the `if: false` line on the workflow_dispatch trigger below.
+#
+# Until you do the above steps, this workflow is deliberately disabled (no push
+# trigger is active, and the manual trigger requires `workflow_dispatch` to be
+# explicitly fired). It serves as a reference and a starting point.
+
+on:
+  # Uncomment the block below once you have replaced the registry/image values.
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'src/**'          # your application source directory
+  #     - 'Dockerfile'
+  workflow_dispatch:        # run manually from GitHub Actions UI while learning
+
+env:
+  REGISTRY: ghcr.io
+  # Replace with your GitHub username and desired image name:
+  IMAGE_NAME: ${{ github.repository_owner }}/hello-gitops
+
+jobs:
+  build-push-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # needed to push the manifest-update branch
+      packages: write        # needed to push to GHCR
+      pull-requests: write   # needed to open the PR
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # 1. Build and push the container image
+      # ------------------------------------------------------------------
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=,format=short
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # ------------------------------------------------------------------
+      # 2. Update the dev overlay with the new image tag
+      #    This is the GitOps part: the pipeline writes to Git, Argo CD reads.
+      # ------------------------------------------------------------------
+      - name: Install kustomize
+        run: |
+          curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin
+
+      - name: Update image tag in dev overlay
+        id: update
+        run: |
+          NEW_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1 | cut -d: -f2)
+          echo "new_tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+
+          cd manifests/hello/overlays/dev
+          # kustomize edit sets the image tag directly in the overlay's
+          # kustomization.yaml, keeping a clean audit trail in Git.
+          kustomize edit set image hello=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${NEW_TAG}
+
+      - name: Open PR with updated dev overlay
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/update-dev-image-${{ steps.update.outputs.new_tag }}
+          commit-message: "chore(dev): update image to ${{ steps.update.outputs.new_tag }}"
+          title: "chore(dev): deploy ${{ steps.update.outputs.new_tag }} to dev"
+          body: |
+            Automated image update from CI.
+
+            - Image: `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.update.outputs.new_tag }}`
+            - Commit: ${{ github.sha }}
+
+            Once this PR merges, Argo CD will auto-sync and deploy to `hello-dev`.
+            To promote to prod, sync `hello-prod` manually (or via `argocd app sync hello-prod`).
+          labels: automated,gitops

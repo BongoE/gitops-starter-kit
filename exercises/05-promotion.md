@@ -7,7 +7,8 @@
    ```bash
    kubectl -n argocd patch application hello-prod --type merge -p '{"operation":{"sync":{}}}'
    ```
-   Then open http://localhost:30081. (Add a port mapping for 30081 in `kind/cluster.yaml` first if you want it reachable from your browser.)
+   Then open http://localhost:30081. (Port 30081 is already mapped in `kind/cluster.yaml`, so no extra step is needed.)
+
 3. Now "promote" a change: edit the base message, push. Dev syncs itself. Prod waits for a human.
 
 **Decide:** should prod auto-sync? Write your answer in one paragraph in `docs/DECISIONS.md` under a new heading. There is no single right answer; there is a right *argument*. Senior engineers are paid for the argument.

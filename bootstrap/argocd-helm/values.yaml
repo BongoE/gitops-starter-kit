@@ -1,0 +1,33 @@
+# Minimal ArgoCD Helm values for the gitops-starter-kit.
+# Disables HA components that are unnecessary in a single-node kind cluster.
+# See https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd for all options.
+
+global:
+  # Pin to a specific ArgoCD version to keep the lab reproducible.
+  # Match the image tag to the chart version you install.
+  image:
+    tag: "v2.13.0"
+
+configs:
+  params:
+    # Disable TLS on the argocd-server so the port-forward works without
+    # the self-signed cert warning. Not for production use.
+    server.insecure: true
+
+server:
+  # Single replica — sufficient for a local learning lab.
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  replicas: 1
+
+# Disable the notification controller — not needed for the starter kit.
+notifications:
+  enabled: false
+
+# Disable the Dex SSO provider — we log in with the admin password.
+dex:
+  enabled: false

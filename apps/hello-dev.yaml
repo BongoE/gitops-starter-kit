@@ -9,7 +9,11 @@ spec:
   project: default
   source:
     repoURL: https://github.com/BongoE/gitops-starter-kit.git
-    targetRevision: broken/troubleshooting-lab
+    # NOTE: This points at `main` for exercises 01-03.
+    # For exercise 04 (troubleshooting lab), change this to:
+    #   targetRevision: broken/troubleshooting-lab
+    # Run `make broken-branch` first if that branch doesn't exist locally.
+    targetRevision: main
     path: manifests/hello/overlays/dev
   destination:
     server: https://kubernetes.default.svc
