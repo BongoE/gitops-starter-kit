@@ -2,3 +2,7 @@
 *.swp
 .idea/
 .vscode/
+
+# Kiro IDE local configuration — intentionally not shared
+# Collaborators bring their own .kiro/ setup
+.kiro/
